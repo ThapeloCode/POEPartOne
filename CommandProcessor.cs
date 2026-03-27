@@ -56,26 +56,30 @@ namespace XeroTron
             TypeReader(response.Welcome());
 
             //RESPONSE TO GREETINGS
-
             string reply = Console.ReadLine().Trim().ToLower();
             UserGreetingsChecker(reply);
 
-            //PRINT LOGO
+            //REPLY TO NAME
+            PrintLogo(name);
+            
+        }
+
+        private void PrintLogo(string name)
+        {
+
+            string greet = response.Greetings(name);
+            speech.SpeakAsync(greet);
+
+            //WAIT FOR SPEECH
+            Thread.Sleep(900);
+
             string method = response.Logo();
             foreach (char letter in method)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(letter);
-                Thread.Sleep(4);
+                Thread.Sleep(1);
             }
-
-
-
-
-            Console.ForegroundColor = ConsoleColor.White;
-            TypeReader(response.Greetings(name));
-
-
-            bool running = true;
         }
 
         private void EndConversation(Boolean running)
@@ -109,7 +113,7 @@ namespace XeroTron
         {
 
 
-            if (reply == "hy" || reply == "hi" || reply == "hello" || reply == "hey" || reply == "greetings" || reply == "how are you")
+            if (reply.Contains("hy") || reply.Contains("hi") || reply.Contains("hello") || reply.Contains("hello") || reply.Contains("greet") || reply.Contains("how are you"))
             {
                 TypeReader(response.NamePrompt());
 
@@ -117,6 +121,8 @@ namespace XeroTron
                 name = Console.ReadLine();
             }
             else {
+                Console.ForegroundColor = ConsoleColor.Red;
+                TypeReader("Even though you don't greet");
                 CheckResponse(reply);
             }
         }
