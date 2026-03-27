@@ -8,7 +8,6 @@ namespace XeroTron
     {
 
         string name;
-        string input;
 
         private SpeechSynthesizer speech = new SpeechSynthesizer();
         private Responses response = new Responses();
@@ -16,7 +15,7 @@ namespace XeroTron
 
         private void TypeReader(string method)
         {
-
+            
             speech.SpeakAsync(method);
 
             //WAIT FOR SPEECH
@@ -36,6 +35,10 @@ namespace XeroTron
                     Thread.Sleep(100);
 
                 }
+                else
+                {
+                    
+                }
 
                 //OVERALL TYPING EFFECT
                 Thread.Sleep(55);
@@ -49,16 +52,35 @@ namespace XeroTron
 
         public void Run()
         {
-            response.Logo();
+            //GREET USER
             TypeReader(response.Welcome());
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            name = Console.ReadLine();
+            //RESPONSE TO GREETINGS
+
+            string reply = Console.ReadLine().Trim().ToLower();
+            UserGreetingsChecker(reply);
+
+            //PRINT LOGO
+            string method = response.Logo();
+            foreach (char letter in method)
+            {
+                Console.Write(letter);
+                Thread.Sleep(4);
+            }
+
+
+
 
             Console.ForegroundColor = ConsoleColor.White;
             TypeReader(response.Greetings(name));
 
+
             bool running = true;
+        }
+
+        private void EndConversation(Boolean running)
+        {
+
             while (running)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -71,9 +93,9 @@ namespace XeroTron
                     continue;
                 }
 
-                if (input == "exit" || input == "quit")
+                if (input == "exit" || input == "quit" || input == "thanks")
                 {
-                    TypeReader("Stay safe out there, " + name + ". Goodbye!");
+                    TypeReader("Stay safe out there, mister " + name + ". Goodbye!");
                     running = false;
                 }
                 else
@@ -83,12 +105,27 @@ namespace XeroTron
             }
         }
 
-        public void CheckResponse(string input)
+        private void UserGreetingsChecker(string reply)
         {
-            // Compare against lowercase because of .ToLower()
-            if (input == "hi" || input == "hello" || input == "hey" || input == "greetings")
+
+
+            if (reply == "hy" || reply == "hi" || reply == "hello" || reply == "hey" || reply == "greetings" || reply == "how are you")
             {
-                TypeReader("Hello!!! " + name + ", how can I help you?");
+                TypeReader(response.NamePrompt());
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                name = Console.ReadLine();
+            }
+            else {
+                CheckResponse(reply);
+            }
+        }
+
+        private void CheckResponse(string input)
+        {
+            if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings" || input == "How are you")
+            {
+                TypeReader("Hello mister " + name + ", hope you are well, how can i help you?");
             }
             else if (input.Contains("email") || input.Contains("phishing"))
             {
@@ -98,7 +135,7 @@ namespace XeroTron
             {
                 TypeReader(response.SafePasswordPractices());
             }
-            else if (input.Contains("suspicious") || input.Contains("link")) // Fixed typo "suspecious"
+            else if (input.Contains("suspicious") || input.Contains("link"))
             {
                 TypeReader(response.RecognizingSuspiciousLinks());
             }
