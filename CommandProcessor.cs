@@ -8,20 +8,41 @@ namespace XeroTron
     public class CommandProcessor
     {
 
-        string name;
-        string reply;
+        string userName;
+        string userGreetings;
         string userResponse;
 
         private SpeechSynthesizer speech = new SpeechSynthesizer();
         private Responses response = new Responses();
 
 
+        //RUN METHODS IN ORDER TO HIDE COMPLEXITY IN THE MAIN METHOD
+        public void Run()
+        {
+            //GREET USER
+            TypeReader(response.Welcome());
+
+            //GREETINGS RESPONSE
+            userGreetings = Console.ReadLine().Trim().ToLower();
+            UserGreetingsChecker(userGreetings);
+
+            //WELCOME MESSAGE
+            PrintLogo(userName);
+
+            //RESPONSE
+            userResponse = Console.ReadLine().Trim().ToLower();
+            CheckResponse(userResponse);
+
+        }
+
+
+        //USES THREADING SLEEP METHOD TO ENABLE INPUT TO SPEAK AND WRITE SEMULTENEOUSLY
         private void TypeReader(string method)
         {
             
             speech.SpeakAsync(method);
 
-            //WAIT FOR SPEECH
+            //WAIT FOR TEXT TO KICK IN
             Thread.Sleep(850);
 
             foreach (char letter in method)
@@ -38,12 +59,8 @@ namespace XeroTron
                     Thread.Sleep(100);
 
                 }
-                else
-                {
-                    
-                }
 
-                //OVERALL TYPING EFFECT
+                //OVERALL TYPING EFFECT SPEED
                 Thread.Sleep(55);
             }
             //WAIT FOR VOICE TO FINISH
@@ -53,24 +70,8 @@ namespace XeroTron
 
         }
 
-        public void Run()
-        {
-            //GREET USER
-            TypeReader(response.Welcome());
-
-            //GREETINGS RESPONSE
-            reply = Console.ReadLine().Trim().ToLower();
-            UserGreetingsChecker(reply);
-
-            //WELCOME MESSAGE
-            PrintLogo(name);
-
-            //RESPONSE
-            userResponse = Console.ReadLine().Trim().ToLower();
-            CheckResponse(userResponse);
-            
-        }
-
+        
+        //THREADS USE SLEEP TO RUN SPEECH AND ASCII SEMULTENEOUSLY 
         private void PrintLogo(string name)
         {
 
@@ -89,91 +90,125 @@ namespace XeroTron
             }
         }
 
-        private void EndConversation(string userResponse)
+        //IF USER INPUT CONTAINS THE TRIGGERING WORD THIS METHOD ENDS OPERATION
+        private void EndConversation()
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            TypeReader("Appreciate the visit Mister " + userName +". Goodbye!");
             
-                if (userResponse == "exit" || userResponse == "quit" || userResponse == "thanks")
-                {
-                    TypeReader("Stay safe out there, mister " + name + ". Goodbye!");
-                }
-                else
-                {
-                    CheckResponse(userResponse);
-                }
-                Environment.Exit(0);
+            Environment.Exit(0);
         }
+
 
         private void UserGreetingsChecker(string reply)
         {
-
             if (Regex.IsMatch(reply, @"\bhi\b") || Regex.IsMatch(reply, @"\bhy\b") || Regex.IsMatch(reply, @"\bhello\b") || Regex.IsMatch(reply, @"\bgreeting\b") || Regex.IsMatch(reply, @"\bhow are you\b"))
             {
                 TypeReader(reply + "! " + response.NamePrompt());
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                name = Console.ReadLine();
-                while ( String.IsNullOrEmpty(name) || Regex.IsMatch(name, @"[^a-zA-Z0-9]")) 
+                userName = Console.ReadLine();
+                Console.ResetColor();
+
+                while (String.IsNullOrEmpty(userName) || Regex.IsMatch(userName, @"[^a-zA-Z0-9]") || userName == "")
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     TypeReader(response.EmptyWarning());
-                    TypeReader(" and cannot contain special characters");
+                    TypeReader("AND CANNOT CONTAIN SPECIAL CHARACTERS!");
+                    Console.ResetColor();
+
+                    Console.Write("Name : ");
+
                     Console.ForegroundColor = ConsoleColor.Green;
-                    name = Console.ReadLine();
-
+                    userName = Console.ReadLine();
+                    Console.ResetColor();
                 }
-
             }
-            else if (String.IsNullOrEmpty(reply)) {
+            else if (String.IsNullOrEmpty(reply))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
                 TypeReader(response.EmptyWarning());
                 TypeReader(response.NamePrompt());
-                name = Console.ReadLine();
-            }
+                Console.ResetColor();
 
+                Console.ForegroundColor = ConsoleColor.Green;
+                userName = Console.ReadLine();
+                Console.ResetColor();
+            }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 TypeReader("Even though you don't greet");
+                Console.ResetColor();
                 CheckResponse(reply);
             }
         }
 
+
+        //METHOD USES IF STATEMENTS AND VARIETY OF USER INPUT TO DECIDE THE DIRECTION OF THE CONVERSATION
         private void CheckResponse(string input)
         {
+            Console.ResetColor();
 
-            if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings" || input == "How are you")
+            if (string.IsNullOrWhiteSpace(input) || input == "exit" || input == "quit" || input == "thanks" || input == "x")
             {
-                TypeReader("Hello mister " + name + ", hope you are well, how can i help you?");
+                EndConversation();
+                return;
             }
+
+            if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings")
+            {
+                TypeReader("Hello Mister " + userName + ", hope you are well. How can I help you?");
+            }
+
             else if (input.Contains("email") || input.Contains("phishing"))
             {
                 TypeReader(response.EmailPhishing());
             }
+
             else if (input.Contains("password"))
             {
                 TypeReader(response.SafePasswordPractices());
             }
+
             else if (input.Contains("suspicious") || input.Contains("link"))
             {
                 TypeReader(response.RecognizingSuspiciousLinks());
             }
+
+            else if (input.Contains("how are you"))
+            {
+                TypeReader("I am well, thank you! Feel free to ask me about cybersecurity.");
+            }
+
+            else if (input.Contains("what's your purpose") || input.Contains("what is your purpose"))
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                TypeReader("To assist you maneuver this hard-to-understand digital age. You can ask me about email phishing, suspicious links, and safe password practices.");
+                Console.ResetColor();
+            }
+
+            else if (input.Contains("what can i ask you"))
+            {
+                TypeReader("I am well trained for Cybersecurity field, if you have any questions about Email Phishing, Suspicious Links and Safe Password Practices");
+            }
+
+
             else
             {
-                if (input == "exit" || input == "quit" || input == "thanks" || String.IsNullOrEmpty(input))
-                {
-                    EndConversation(input);
-                }
-                else
-                {
-                    TypeReader("I specialize in CyberSecurity. To Be Specific Phishing, Password and Links ");
-                    TypeReader("Please ask questions related to Cybersecuruty");
-                    Console.WriteLine("-------------------------------------------------------------------------------");
-                    Console.WriteLine("TO QUIT:");
-                    Console.WriteLine("[QUIT]                             [EXIT]                              [THANKS]");
-
-                    Console.Write("REPLY: "); userResponse = Console.ReadLine().Trim().ToLower();
-                    CheckResponse(userResponse);
-                }
-
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                TypeReader("I specialize in Cybersecurity. To be specific in Phishing, Passwords, and Links.");
+                TypeReader("Please ask a related question or type 'exit' to quit.");
+                Console.ResetColor();
             }
+
+            Console.Write("\nREPLY: ");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            userResponse = Console.ReadLine()?.Trim().ToLower();
+            Console.ResetColor();
+
+            CheckResponse(userResponse);
         }
 
     }
