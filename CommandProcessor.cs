@@ -1,5 +1,6 @@
 ﻿
 using System.Speech.Synthesis;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace XeroTron
@@ -8,6 +9,8 @@ namespace XeroTron
     {
 
         string name;
+        string reply;
+        string userResponse;
 
         private SpeechSynthesizer speech = new SpeechSynthesizer();
         private Responses response = new Responses();
@@ -56,15 +59,15 @@ namespace XeroTron
             TypeReader(response.Welcome());
 
             //GREETINGS RESPONSE
-            string reply = Console.ReadLine().Trim().ToLower();
+            reply = Console.ReadLine().Trim().ToLower();
             UserGreetingsChecker(reply);
 
             //WELCOME MESSAGE
             PrintLogo(name);
 
             //RESPONSE
-            string UserResponse = Console.ReadLine().Trim().ToLower();
-            CheckResponse(UserResponse);
+            userResponse = Console.ReadLine().Trim().ToLower();
+            CheckResponse(userResponse);
             
         }
 
@@ -86,47 +89,47 @@ namespace XeroTron
             }
         }
 
-        private void EndConversation()
+        private void EndConversation(string userResponse)
         {
-            Boolean running = true;
-
-            while (running)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                string input = Console.ReadLine()?.Trim().ToLower();
-                Console.ForegroundColor = ConsoleColor.White;
-
-                if (string.IsNullOrEmpty(input))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    TypeReader(response.Warning());
-                    continue;
-                }
-
-                if (input == "exit" || input == "quit" || input == "thanks")
+            
+                if (userResponse == "exit" || userResponse == "quit" || userResponse == "thanks")
                 {
                     TypeReader("Stay safe out there, mister " + name + ". Goodbye!");
-                    running = false;
                 }
                 else
                 {
-                    CheckResponse(input);
+                    CheckResponse(userResponse);
                 }
-            }
+                Environment.Exit(0);
         }
 
         private void UserGreetingsChecker(string reply)
         {
 
-
-            if (reply.Contains("hy") || reply.Contains("hi") || reply.Contains("hello") || reply.Contains("hello") || reply.Contains("greet") || reply.Contains("how are you"))
+            if (Regex.IsMatch(reply, @"\bhi\b") || Regex.IsMatch(reply, @"\bhy\b") || Regex.IsMatch(reply, @"\bhello\b") || Regex.IsMatch(reply, @"\bgreeting\b") || Regex.IsMatch(reply, @"\bhow are you\b"))
             {
-                TypeReader(response.NamePrompt());
+                TypeReader(reply + "! " + response.NamePrompt());
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 name = Console.ReadLine();
+                while ( String.IsNullOrEmpty(name) || Regex.IsMatch(name, @"[^a-zA-Z0-9]")) 
+                {
+                    TypeReader(response.EmptyWarning());
+                    TypeReader(" and cannot contain special characters");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    name = Console.ReadLine();
+
+                }
+
             }
-            else {
+            else if (String.IsNullOrEmpty(reply)) {
+                TypeReader(response.EmptyWarning());
+                TypeReader(response.NamePrompt());
+                name = Console.ReadLine();
+            }
+
+            else
+            {
                 Console.ForegroundColor = ConsoleColor.Red;
                 TypeReader("Even though you don't greet");
                 CheckResponse(reply);
@@ -135,6 +138,7 @@ namespace XeroTron
 
         private void CheckResponse(string input)
         {
+
             if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings" || input == "How are you")
             {
                 TypeReader("Hello mister " + name + ", hope you are well, how can i help you?");
@@ -151,18 +155,25 @@ namespace XeroTron
             {
                 TypeReader(response.RecognizingSuspiciousLinks());
             }
-            else if (input.Length > 1 && input != null || !String.IsNullOrEmpty(input))
-            {
-                TypeReader("I'm specialized in CyberSecurity. To Be Specific Phishing, Password and Links ");
-                TypeReader("Ask the correct question");
-                string UserResponse = Console.ReadLine().Trim().ToLower();
-                CheckResponse(UserResponse);
-            }
             else
             {
-                EndConversation();
-            }
+                if (input == "exit" || input == "quit" || input == "thanks" || String.IsNullOrEmpty(input))
+                {
+                    EndConversation(input);
+                }
+                else
+                {
+                    TypeReader("I specialize in CyberSecurity. To Be Specific Phishing, Password and Links ");
+                    TypeReader("Please ask questions related to Cybersecuruty");
+                    Console.WriteLine("-------------------------------------------------------------------------------");
+                    Console.WriteLine("TO QUIT:");
+                    Console.WriteLine("[QUIT]                             [EXIT]                              [THANKS]");
 
+                    Console.Write("REPLY: "); userResponse = Console.ReadLine().Trim().ToLower();
+                    CheckResponse(userResponse);
+                }
+
+            }
         }
 
     }

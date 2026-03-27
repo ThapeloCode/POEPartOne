@@ -28,24 +28,24 @@ namespace XeroTron
             return "What is your name?";
         }
 
-        public string Warning()
+        public string EmptyWarning()
         {
-            return "ENTER THE CORRECT VALUE!!!";
+            return "VALUE CANNOT BE EMPTY!";
         }
         public string Greetings(string name)
         {
-            return "Pleased to meet you Mister " + name + ". My name is Xerotron. please tell me, how can i help you?";
+            return "Pleased to meet you Mister " + name + ". My name is Xerotron. A Cybersecurity assistance.Please tell me, how can i help you?";
         }
         public string EmailPhishing()
         {
-            return "When you receive a suspected phishing email, stay calm and act safely. " +
+            return "A suspected phishing email, stay calm and act safely. " +
                 "Never click links, open attachments, or reply, as this can put your device or accounts at risk. " +
                 "Quickly check the real sender address and hover over links to spot fake domains or urgent threats like “account will be locked. " +
-                "Mark the email as phishing or spam in your email app, then delete it." +
-                " Remember the golden rule: never trust an email that asks you to click or log in—always type the official website yourself." +
+                "Mark the email as phishing or spam in your email app, then delete it. " +
+                "Remember the golden rule: never trust an email that asks you to click or log in—always type the official website yourself. " +
                 "If you accidentally clicked or shared info, change your password immediately from a safe device, run a virus scan, and enable two-factor authentication. " +
                 "Following these simple steps keeps you protected. " +
-                " You’ve got this! If you see one now, share it and I’ll help. Stay secure, friend!";
+                "You’ve got this! If you see one now, share it and I’ll help. Stay secure my friend!";
         }
 
         public string SafePasswordPractices()
