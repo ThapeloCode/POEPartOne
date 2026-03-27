@@ -55,12 +55,16 @@ namespace XeroTron
             //GREET USER
             TypeReader(response.Welcome());
 
-            //RESPONSE TO GREETINGS
+            //GREETINGS RESPONSE
             string reply = Console.ReadLine().Trim().ToLower();
             UserGreetingsChecker(reply);
 
-            //REPLY TO NAME
+            //WELCOME MESSAGE
             PrintLogo(name);
+
+            //RESPONSE
+            string UserResponse = Console.ReadLine().Trim().ToLower();
+            CheckResponse(UserResponse);
             
         }
 
@@ -71,7 +75,7 @@ namespace XeroTron
             speech.SpeakAsync(greet);
 
             //WAIT FOR SPEECH
-            Thread.Sleep(900);
+            Thread.Sleep(950);
 
             string method = response.Logo();
             foreach (char letter in method)
@@ -82,8 +86,9 @@ namespace XeroTron
             }
         }
 
-        private void EndConversation(Boolean running)
+        private void EndConversation()
         {
+            Boolean running = true;
 
             while (running)
             {
@@ -93,6 +98,7 @@ namespace XeroTron
 
                 if (string.IsNullOrEmpty(input))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     TypeReader(response.Warning());
                     continue;
                 }
@@ -145,10 +151,18 @@ namespace XeroTron
             {
                 TypeReader(response.RecognizingSuspiciousLinks());
             }
+            else if (input.Length > 1 && input != null || !String.IsNullOrEmpty(input))
+            {
+                TypeReader("I'm specialized in CyberSecurity. To Be Specific Phishing, Password and Links ");
+                TypeReader("Ask the correct question");
+                string UserResponse = Console.ReadLine().Trim().ToLower();
+                CheckResponse(UserResponse);
+            }
             else
             {
-                TypeReader("I'm specialized in CyberSecurity. Please ask about passwords, phishing, or suspicious links.");
+                EndConversation();
             }
+
         }
 
     }

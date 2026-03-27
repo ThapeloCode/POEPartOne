@@ -7,7 +7,11 @@ namespace XeroTron
 {
     internal class Responses
     {
-
+        public string LineSeparator()
+        {
+            return
+                "-------------------------------------------------------------------------------";
+        }
         public string Logo()
         {
             return
