@@ -134,6 +134,20 @@ namespace XeroTron
                 Console.ForegroundColor = ConsoleColor.Green;
                 userName = Console.ReadLine();
                 Console.ResetColor();
+                
+                while (String.IsNullOrEmpty(userName) || Regex.IsMatch(userName, @"[^a-zA-Z0-9]") || userName == "")
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    TypeReader(response.EmptyWarning());
+                    TypeReader("AND CANNOT CONTAIN SPECIAL CHARACTERS!");
+                    Console.ResetColor();
+
+                    Console.Write("Name : ");
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    userName = Console.ReadLine();
+                    Console.ResetColor();
+                }
             }
             else
             {
