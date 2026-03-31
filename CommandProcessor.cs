@@ -22,7 +22,11 @@ namespace XeroTron
             //GREET USER
             TypeReader(response.Welcome());
 
-            //GREETINGS RESPONSE
+            //GREETINGS RESPONSEConsole.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nREPLY : ");
+            Console.ResetColor();
+
             userGreetings = Console.ReadLine().Trim().ToLower();
             UserGreetingsChecker(userGreetings);
 
@@ -30,6 +34,10 @@ namespace XeroTron
             PrintLogo(userName);
 
             //RESPONSE
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\nREPLY : ");
+            Console.ResetColor();
+
             userResponse = Console.ReadLine().Trim().ToLower();
             CheckResponse(userResponse);
 
@@ -86,6 +94,7 @@ namespace XeroTron
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(letter);
+                Console.ResetColor();
                 Thread.Sleep(1);
             }
         }
@@ -95,7 +104,7 @@ namespace XeroTron
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             TypeReader("Appreciate the visit Mister " + userName +". Goodbye!");
-            
+            Console.ResetColor();
             Environment.Exit(0);
         }
 
@@ -107,8 +116,10 @@ namespace XeroTron
                 TypeReader(reply + "! " + response.NamePrompt());
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                userName = Console.ReadLine();
+                Console.Write("\nNAME  : ");
                 Console.ResetColor();
+
+                userName = Console.ReadLine();
 
                 while (String.IsNullOrEmpty(userName) || Regex.IsMatch(userName, @"[^a-zA-Z0-9]") || userName == "")
                 {
@@ -117,11 +128,11 @@ namespace XeroTron
                     TypeReader("AND CANNOT CONTAIN SPECIAL CHARACTERS!");
                     Console.ResetColor();
 
-                    Console.Write("Name : ");
-
                     Console.ForegroundColor = ConsoleColor.Green;
-                    userName = Console.ReadLine();
+                    Console.Write("\nNAME  : ");
                     Console.ResetColor();
+
+                    userName = Console.ReadLine();
                 }
             }
             else if (String.IsNullOrEmpty(reply))
@@ -132,9 +143,11 @@ namespace XeroTron
                 Console.ResetColor();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                userName = Console.ReadLine();
+                Console.Write("\nNAME  : ");
                 Console.ResetColor();
-                
+
+                userName = Console.ReadLine();
+
                 while (String.IsNullOrEmpty(userName) || Regex.IsMatch(userName, @"[^a-zA-Z0-9]") || userName == "")
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -142,11 +155,11 @@ namespace XeroTron
                     TypeReader("AND CANNOT CONTAIN SPECIAL CHARACTERS!");
                     Console.ResetColor();
 
-                    Console.Write("Name : ");
-
                     Console.ForegroundColor = ConsoleColor.Green;
-                    userName = Console.ReadLine();
+                    Console.Write("\nNAME  : ");
                     Console.ResetColor();
+
+                    userName = Console.ReadLine();
                 }
             }
             else
@@ -170,23 +183,35 @@ namespace XeroTron
                 return;
             }
 
-            if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings")
+            if (input == "hy" || input == "hi" || input == "hello" || input == "hey" || input == "greetings" || input == "good" || input == "gud" )
             {
                 TypeReader("Hello Mister " + userName + ", hope you are well. How can I help you?");
             }
 
             else if (input.Contains("email") || input.Contains("phishing"))
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(response.LineSeparator());
+                Console.ResetColor();
+
                 TypeReader(response.EmailPhishing());
             }
 
             else if (input.Contains("password"))
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(response.LineSeparator());
+                Console.ResetColor();
+
                 TypeReader(response.SafePasswordPractices());
             }
 
             else if (input.Contains("suspicious") || input.Contains("link"))
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(response.LineSeparator());
+                Console.ResetColor();
+
                 TypeReader(response.RecognizingSuspiciousLinks());
             }
 
@@ -197,9 +222,9 @@ namespace XeroTron
 
             else if (input.Contains("what's your purpose") || input.Contains("what is your purpose"))
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                TypeReader("To assist you maneuver this hard-to-understand digital age. You can ask me about email phishing, suspicious links, and safe password practices.");
-                Console.ResetColor();
+
+                TypeReader("To assist you maneuver this hard-to-understand digital age. You can ask me about \nemail phishing, suspicious links, and safe password practices.");
+                
             }
 
             else if (input.Contains("what can i ask you"))
@@ -216,11 +241,11 @@ namespace XeroTron
                 Console.ResetColor();
             }
 
-            Console.Write("\nREPLY: ");
-
             Console.ForegroundColor = ConsoleColor.Green;
-            userResponse = Console.ReadLine()?.Trim().ToLower();
+            Console.Write("\nREPLY : ");
             Console.ResetColor();
+
+            userResponse = Console.ReadLine()?.Trim().ToLower();
 
             CheckResponse(userResponse);
         }
